@@ -91,7 +91,26 @@ namespace Library.API
                 {
                     //The model needs specifications that can help identify the documentation
                    Title = "Library API",
-                   Version = "1"
+                   Version = "1",
+                   //It helps to attach descriptions to API especially when you're exposing them to the public.
+                   Description = "Through this API you can access authors and their books.",
+                   //It is also important to add contact information to your API in order to help users of the API send feedback.
+                   Contact = new Microsoft.OpenApi.Models.OpenApiContact()
+                   {
+                       Email = "olabayobalogun@gmail.com",
+                       Name = " Olabayo Balogun",
+                       Url = new Uri("https://www.linkedin.com/in/olabayobalogun/")
+                       //The extensions property can be used to hint at features that aren't covered by Open API documentation, eg, address, logo, etc.
+                      //Extensions = 
+                   },
+                   //The License feature can be used to show things like licenses
+                   License = new Microsoft.OpenApi.Models.OpenApiLicense()
+                   {
+                       Name = "MIT License",
+                       Url = new Uri ("https://opensources.org/licenses/MIT")
+                   }
+                   //Terms of service can also be added if needed.
+                   //TermsOfService =
                 });
 
                 //We use reflection to get declare a variable name for the filepath of the xml file by using the variable below.

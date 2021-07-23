@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Library.API</name>
+    </assembly>
+    <members>
+        <member name="M:Library.API.Controllers.AuthorsController.GetAuthor(System.Guid)">
+            <summary>
+             Get an author by his/her id
+            </summary>
+            <param name="authorId">The id of the author you want to get</param>
+            <returns>An ActionResult of type "author"</returns>
+        </member>
+        <member name="M:Library.API.Controllers.AuthorsController.UpdateAuthor(System.Guid,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{Library.API.Models.AuthorForUpdate})">
+            <remarks>
+            Sample request (this request updates the author's first name) \
+            PATCH /author/id \
+            [ \
+                { \
+                    "op": "replace", \
+                    "path": "/firstname", \
+                    "value": "new first name" \
+                } \
+            ] \
+            </remarks>
+        </member>
+        <member name="T:Library.API.Models.Author">
+            <summary>
+                   An author with Id, FirstName and LastName fields
+            </summary>
+        </member>
+        <member name="P:Library.API.Models.Author.Id">
+            <summary>
+                The Id of the author
+            </summary>
+        </member>
+        <member name="P:Library.API.Models.Author.FirstName">
+            <summary>
+                The first name of the author
+            </summary>
+        </member>
+        <member name="P:Library.API.Models.Author.LastName">
+            <summary>
+                The last name of the author
+            </summary>
+        </member>
+        <member name="P:Library.API.Models.AuthorForUpdate.FirstName">
+            <summary>
+                The first name of the author
+            </summary>
+        </member>
+        <member name="P:Library.API.Models.AuthorForUpdate.LastName">
+            <summary>
+                The last name of the author
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -76,6 +76,21 @@ namespace Library.API
             services.AddScoped<IAuthorRepository, AuthorRepository>();
 
             services.AddAutoMapper();
+
+
+            //Swashbuckle is added here
+            //A couple parameters are needed for the service adding swagger gen. These are added below
+            //The "SwaggerDoc" helps with generating the documentation
+            services.AddSwaggerGen(setupAction =>
+            {
+                //The SwaggerDoc needs a name and a model for the api documentation passed in as a parameter
+                setupAction.SwaggerDoc("LibraryOpenAPISpecification", new Microsoft.OpenApi.Models.OpenApiInfo() 
+                {
+                    //The model needs specifications that can help identify the documentation
+                   Title = "Library API",
+                   Version = "1"
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -93,6 +108,11 @@ namespace Library.API
             }
 
             app.UseHttpsRedirection();
+
+            //Adding swagger to the request pipeline is quite important too.
+            //It is important for it to come after the "UseHttpsRedirection" pipeline request as it ensures that every unecrypted call will be redirected to the encrypted version
+
+            app.UseSwagger();
 
             app.UseStaticFiles();
 

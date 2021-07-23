@@ -8,7 +8,10 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace Library.API
 {
@@ -90,6 +93,16 @@ namespace Library.API
                    Title = "Library API",
                    Version = "1"
                 });
+
+                //We use reflection to get declare a variable name for the filepath of the xml file by using the variable below.
+                var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+
+                //We use "System.IO" to create the variable for the fullpath so it can be matched to the XML file
+                //"Path.Combine" is used to concatenate the base directory of the project (whereever it is) with the variable that houses the XML comments file (whose variable is declared above) 
+                var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
+
+                //The line of code below is used to ensure that the project can locate the xml file in order to improve the documentation 
+                setupAction.IncludeXmlComments(xmlCommentsFullPath);
             });
         }
 

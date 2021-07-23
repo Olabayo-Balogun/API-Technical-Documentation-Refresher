@@ -32,6 +32,12 @@ namespace Library.API.Controllers
             return Ok(_mapper.Map<IEnumerable<Author>>(authorsFromRepo));
         }
 
+        //Generating parameters for is done by typing the "/" three consecutive times and the code snippet below is generated. 
+        /// <summary>
+        ///  Get an author by his/her id
+        /// </summary>
+        /// <param name="authorId">The id of the author you want to get</param>
+        /// <returns>An ActionResult of type "author"</returns>
         [HttpGet("{authorId}")]
         public async Task<ActionResult<Author>> GetAuthor(
             Guid authorId)

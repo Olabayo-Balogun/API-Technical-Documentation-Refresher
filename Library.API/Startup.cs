@@ -114,6 +114,15 @@ namespace Library.API
 
             app.UseSwagger();
 
+            app.UseSwaggerUI(setupAction =>
+            {
+                //we do this to show the swagger UI where to find the OpenAPI documentation and assign a name to the endpoint
+                setupAction.SwaggerEndpoint("/swagger/LibraryOpenAPISpecification/swagger.json", "Library API");
+
+                //To ensure that swagger loads in the root URL on launching the app, the code below is written
+                setupAction.RoutePrefix = "";
+            }); 
+
             app.UseStaticFiles();
 
             app.UseMvc();

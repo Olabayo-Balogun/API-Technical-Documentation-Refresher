@@ -39,6 +39,17 @@ namespace Library.API.Controllers
             return Ok(_mapper.Map<IEnumerable<Book>>(booksFromRepo));
         }
 
+        /// <summary>
+        ///     Get a book by id for a specific author
+        /// </summary>
+        /// <param name="authorId">The ID of the author</param>
+        /// <param name="bookId">The ID of the book</param>
+        /// <returns>An ACtionResult of type "Book"</returns>
+        /// <response code="200">Returns the requested book</response>
+        //We use the attributes below to aid documentation of all errors that can be returned when trying to consume an API
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("{bookId}")]
         public async Task<ActionResult<Book>> GetBook(
             Guid authorId,

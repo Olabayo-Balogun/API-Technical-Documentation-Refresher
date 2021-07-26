@@ -14,6 +14,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
+//The line of code below shows how to declare default API conventions globally
+[assembly: ApiConventionType(typeof(DefaultApiConventions))]
 namespace Library.API
 {
     public class Startup
@@ -31,12 +33,13 @@ namespace Library.API
             services.AddMvc(setupAction =>
             {
                 //Using this "setupAction.Filter.Add" helps to globally declare response types for APIs
-                setupAction.Filters.Add(
+                //It's important to note that the attributes declared below instantly overrides any default convention declared anywhere in the project
+               /* setupAction.Filters.Add(
                     new ProducesResponseTypeAttribute(StatusCodes.Status406NotAcceptable));
                 setupAction.Filters.Add(
                     new ProducesResponseTypeAttribute(StatusCodes.Status400BadRequest));
                 setupAction.Filters.Add(
-                        new ProducesResponseTypeAttribute(StatusCodes.Status500InternalServerError));
+                        new ProducesResponseTypeAttribute(StatusCodes.Status500InternalServerError));*/
 
                 setupAction.ReturnHttpNotAcceptable = true;
 

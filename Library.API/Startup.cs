@@ -29,7 +29,13 @@ namespace Library.API
         {
             services.AddMvc(setupAction =>
             {
-
+                //Using this "setupAction.Filter.Add" helps to globally declare response types for APIs
+                setupAction.Filter.Add(
+                    new ProducesResponseTypeAttribute(StatusCodes.Status406NotAcceptable));
+                setupAction.Filter.Add(
+                    new ProducesResponseTypeAttribute(StatusCodes.Status400BadRequest));
+                setupAction.Filter.Add(
+                        new ProducesResponseTypeAttribute(StatusCodes.Status500InternalServerError));
 
                 setupAction.ReturnHttpNotAcceptable = true;
 

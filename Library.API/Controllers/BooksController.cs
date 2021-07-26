@@ -10,6 +10,12 @@ namespace Library.API.Controllers
 {
     [Route("api/authors/{authorId}/books")]
     [ApiController]
+    //Adding general response types at the controller level saves you from having to repeat it for each API.
+    //Only add API response types that apply to all APIs (within the controller) at the controller level
+    //If response types are declared globally in the startup class, there's no use for repeating it at the controller level
+    /*[ProducesResponseType(StatusCodes.Status406NotAcceptable)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]*/
     public class BooksController : ControllerBase
     { 
         private readonly IBookRepository _bookRepository;
@@ -48,7 +54,6 @@ namespace Library.API.Controllers
         /// <response code="200">Returns the requested book</response>
         //We use the attributes below to aid documentation of all errors that can be returned when trying to consume an API
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("{bookId}")]
         public async Task<ActionResult<Book>> GetBook(

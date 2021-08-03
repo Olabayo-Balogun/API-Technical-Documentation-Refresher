@@ -127,7 +127,9 @@ namespace Library.API.Controllers
         /// <response code="422">Validation Error</response>
         [HttpPost()]
         //The attribute below helps ensure that regardless of the "Produces" specification declared at controller level, this API can accept inputs of the one specified below
-        [Consumes("application/json")]
+        [Consumes("application/json", "application/vendor.marvin.bookforcreation+json")]
+        //The attribute below ensures that only requests for the specified media types below matches to this API
+        [RequestHeaderMatchesMediaType(HeaderNames.ContentType, "application/json", "application/vendor.marvin.bookforcreation+json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity, Type = typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary))]
@@ -141,6 +143,42 @@ namespace Library.API.Controllers
             }
 
             var bookToAdd = _mapper.Map<Entities.Book>(bookForCreation);
+            _bookRepository.AddBook(bookToAdd);
+            await _bookRepository.SaveChangesAsync();
+
+            return CreatedAtRoute(
+                "GetBook",
+                new { authorId, bookId = bookToAdd.Id },
+                _mapper.Map<Book>(bookToAdd));
+        }
+
+        /// <summary>
+        /// Create a book for a specific author
+        /// </summary>
+        /// <param name="authorId">The id of the book author</param>
+        /// <param name="bookForCreationWithAmountOfPages">The book to create</param>
+        /// <returns>An ActionResult of type Book</returns>
+        /// <response code="422">Validation Error</response>
+        [HttpPost()]
+        //The attribute below helps ensure that regardless of the "Produces" specification declared at controller level, this API can accept inputs of the one specified below
+        [Consumes("application/vendor.marvin.bookforcreationwithamountofpages+json")]
+        //The attribute below ensures that only requests for the specified media types below matches to this API
+        [RequestHeaderMatchesMediaType(HeaderNames.ContentType, "application/json", "application/vendor.marvin.bookforcreationwithamountofpages+json")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity, Type = typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary))]
+        //The attribute below ensures that the customer doesn't see this API as a standalone API but as a subset of the first API
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<ActionResult<Book>> CreateBookWithAmountOfPages(
+            Guid authorId,
+            [FromBody] BookForCreationWithAmountOfPages bookForCreationWithAmountOfPages)
+        {
+            if (!await _authorRepository.AuthorExistsAsync(authorId))
+            {
+                return NotFound();
+            }
+
+            var bookToAdd = _mapper.Map<Entities.Book>(bookForCreationWithAmountOfPages);
             _bookRepository.AddBook(bookToAdd);
             await _bookRepository.SaveChangesAsync();
 

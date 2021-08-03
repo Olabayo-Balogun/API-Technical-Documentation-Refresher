@@ -130,8 +130,9 @@ namespace Library.API
                     return apiDescriptions.First();
                 });*/
 
-                //We use the service below to ensure that the Operation Filter works
+                //We use the service below register the operation filter and to ensure that the Operation Filter works
                 setupAction.OperationFilter<GetBookOperationFilter>();
+                setupAction.OperationFilter<CreateBookOperationFilter>();
 
                 //We use reflection to get declare a variable name for the filepath of the xml file by using the variable below.
                 var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";

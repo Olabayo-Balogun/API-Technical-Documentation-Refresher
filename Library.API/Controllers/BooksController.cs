@@ -77,8 +77,19 @@ namespace Library.API.Controllers
             return Ok(_mapper.Map<Book>(bookFromRepo));
         }
 
-
+        /// <summary>
+        /// Create a book for a specific author
+        /// </summary>
+        /// <param name="authorId">The id of the book author</param>
+        /// <param name="bookForCreation">The book to create</param>
+        /// <returns>An ActionResult of type book</returns>
+        /// <response code="422">Validation Error</response>
         [HttpPost()]
+        //The attribute below helps ensure that regardless of the "Produces" specification declared at controller level, this API can accept inputs of the one specified below
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity, Type = typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary)]
         public async Task<ActionResult<Book>> CreateBook(
             Guid authorId,
             [FromBody] BookForCreation bookForCreation)

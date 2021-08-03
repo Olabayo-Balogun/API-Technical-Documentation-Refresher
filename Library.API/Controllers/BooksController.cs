@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Library.API.Attributes;
 using Library.API.Models;
 using Library.API.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -55,10 +57,14 @@ namespace Library.API.Controllers
         /// <param name="bookId">The ID of the book</param>
         /// <returns>An ACtionResult of type "Book"</returns>
         /// <response code="200">Returns the requested book</response>
+        [HttpGet("{bookId}")]
         //We use the attributes below to aid documentation of all errors that can be returned when trying to consume an API
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [HttpGet("{bookId}")]
+        //Including the produces atttribute is important in ensuring the API can return it. You can declare it here at the API level or add it to the specified media types at the controller level
+        [Produces("application/vendor.marvin.book+json")]
+        //The attribute below ensures that only requests for the specified media types below matches to this API
+        [RequestHeaderMatchesMediaType(HeaderNames.Accept, "application/json", "application/vendor.marvin.book+json")]
         public async Task<ActionResult<Book>> GetBook(
             Guid authorId,
             Guid bookId)
@@ -78,6 +84,41 @@ namespace Library.API.Controllers
         }
 
         /// <summary>
+        ///     Get a book by id for a specific author
+        /// </summary>
+        /// <param name="authorId">The ID of the author</param>
+        /// <param name="bookId">The ID of the book</param>
+        /// <returns>An ACtionResult of type "BookWithConcatenatedAuthorName"</returns>
+        /// <response code="200">Returns the requested book</response>
+        //We use the attributes below to aid documentation of all errors that can be returned when trying to consume an API
+        [HttpGet("{bookId}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        //Including the produces atttribute is important in ensuring the API can return it. You can declare it here at the API level or add it to the specified media types at the controller level
+        [Produces("application/vendor.marvin.bookwithconcatenatedauthorname+json")]
+        //The attribute below ensures that only requests for the specified media types below matches to this API
+        [RequestHeaderMatchesMediaType(HeaderNames.Accept, "application/vendor.marvin.bookwithconcatenatedauthorname+json")]
+        //The attribute below ensures that the customer doesn't see this API as a standalone API but as a subset of the first API
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<ActionResult<BookWithConcatenatedAuthorName>> GetBookWithConcatenatedAuthorName(
+            Guid authorId,
+            Guid bookId)
+        {
+            if (!await _authorRepository.AuthorExistsAsync(authorId))
+            {
+                return NotFound();
+            }
+
+            var bookFromRepo = await _bookRepository.GetBookAsync(authorId, bookId);
+            if (bookFromRepo == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_mapper.Map<BookWithConcatenatedAuthorName>(bookFromRepo));
+        }
+
+        /// <summary>
         /// Create a book for a specific author
         /// </summary>
         /// <param name="authorId">The id of the book author</param>
@@ -89,7 +130,7 @@ namespace Library.API.Controllers
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity, Type = typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity, Type = typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary))]
         public async Task<ActionResult<Book>> CreateBook(
             Guid authorId,
             [FromBody] BookForCreation bookForCreation)

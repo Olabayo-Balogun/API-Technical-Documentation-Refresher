@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Library.API.Contexts;
+using Library.API.OperationsFilters;
 using Library.API.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -122,6 +123,15 @@ namespace Library.API
                    //Terms of service can also be added if needed.
                    //TermsOfService =
                 });
+
+                //The service below is called in the situation where you need to differentiate between two APIs that have very similar names and attributes
+                /*setupAction.ResolveConflictingActions(apiDescriptions =>
+                {
+                    return apiDescriptions.First();
+                });*/
+
+                //We use the service below to ensure that the Operation Filter works
+                setupAction.OperationFilter<GetBookOperationFilter>();
 
                 //We use reflection to get declare a variable name for the filepath of the xml file by using the variable below.
                 var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";

@@ -9,8 +9,12 @@ using System.Threading.Tasks;
 
 namespace Library.API.Controllers
 {
-
+    [Produces("appication/json", "application/xml")]
     [Route("api/authors")]
+    //The "ApiExplorerSettings" has the "GroupName" feature which helps to specify where all the actions in a controller belong
+    //The "ApiExplorerSettings" can also be declared at action/API level.
+    //Note that the "GroupName" must be the same as the SwaggerDoc name in the startup class
+    [ApiExplorerSettings(GroupName = "LibraryOpenAPISpecificationAuthors")]
     [ApiController]
     public class AuthorsController : ControllerBase
     {

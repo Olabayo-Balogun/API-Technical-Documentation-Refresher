@@ -14,6 +14,10 @@ namespace Library.API.Controllers
         //The attribute below declares the return type of the controller
         [Produces("application/json", "application/xml")]
         [Route("api/authors/{authorId}/books")]
+        //The "ApiExplorerSettings" has the "GroupName" feature which helps to specify where all the actions in a controller belong
+        //The "ApiExplorerSettings" can also be declared at action/API level.
+        //Note that the "GroupName" must be the same as the SwaggerDoc name in the startup class
+        [ApiExplorerSettings(GroupName = "LibraryOpenAPISpecificationBooks")]
         [ApiController]
         //Adding general response types at the controller level saves you from having to repeat it for each API.
         //Only add API response types that apply to all APIs (within the controller) at the controller level

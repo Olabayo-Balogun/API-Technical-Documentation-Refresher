@@ -351,6 +351,11 @@ namespace Library.API
 
             app.UseSwaggerUI(setupAction =>
             {
+                //This is where you inject the filepath of the resources you're calling to design your UI
+                setupAction.InjectStylesheet("/Assets/custom-ui-css");
+                //The code snippet below is what you use to map to the resource file for the swagger index page that will be displayed when you run the API on swagger
+                setupAction.IndexStream = () => GetType().Assembly.GetManifestResourceStream("Library.API.EmbeddedAssets.index.html");
+
                 foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
                 {
                     //we do this to show the swagger UI where to find the OpenAPI documentation and assign a name to the endpoint

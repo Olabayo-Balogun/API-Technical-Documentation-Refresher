@@ -1,0 +1,10 @@
+﻿#swagger-ui{
+    max-width: 800px;
+    margin: auto;
+}
+
+/*This datalist the class name assigned to the buttons in Swagger UI, we're overriding it with different styles*/
+.opblock-summary-method {
+    border-color: #000000 !important;
+    background: #000000 !important;
+}

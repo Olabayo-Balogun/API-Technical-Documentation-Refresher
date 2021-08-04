@@ -16,7 +16,9 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -49,6 +51,8 @@ namespace Library.API
                         new ProducesResponseTypeAttribute(StatusCodes.Status500InternalServerError));
                 setupAction.Filters.Add(
                     new ProducesDefaultResponseTypeAttribute());
+                setupAction.Filters.Add(
+                    new ProducesResponseTypeAttribute(StatusCodes.Status401Unauthorized));
                 
                 //Adding this completes the process of creating the authentication
                 setupAction.Filters.Add(
@@ -252,6 +256,27 @@ namespace Library.API
                 //    //Terms of service can also be added if needed.
                 //    //TermsOfService =
                 //});
+
+                setupAction.AddSecurityDefinition("basicAuth", new OpenApiSecurityScheme()
+                {
+                    //basicAuth requires you to pass in the type of the security definition, the "Scheme" is case sensitive
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "basic",
+                    Description = "Input your username and password to access this API"
+                });
+
+                //This is where we declare the security authentication as one that requires authentication
+                setupAction.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "basicAuth" }
+                        }, new List<string>() }
+                });
 
                 //This helps us with a strategy for selecting actions
                 //This middleware can also make it possible for documentation to appear in a version regardless of it has the action or now, as long as one of the APIs have it.

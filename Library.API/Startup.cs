@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -91,20 +92,63 @@ namespace Library.API
 
             services.AddAutoMapper();
 
+            //The service below ensures that API can be versioned in this project.
+            //Note that a default API must be specified at least for the API to be consumable.
+            services.AddApiVersioning(setupAction=>
+            {
+                //The SetupAction below helps the project figure our the default version of the API so we don't have to pass it in.
+                setupAction.AssumeDefaultVersionWhenUnspecified = true;
+                //The declaration below is where we declare the default version of the API (in this case it's 1.0)
+                //This Default API is a combined version in that it can detect the API regardless of the style of declaration
+                setupAction.DefaultApiVersion = new ApiVersion(1, 0);
+                //The middleware below reports the API back to us so we know
+                setupAction.ReportApiVersions = true;
+                //This helps the project read the header of the API in order to know the version of the API
+                //setupAction.ApiVersionReader = new HeaderApiVersionReader("api-version");
+                //For media type APIs, we can use the middleware below.
+                //setupAction.ApiVersionReader = new MediaTypeApiVersionReader("api-version");
+            });
 
             //Swashbuckle is added here
             //A couple parameters are needed for the service adding swagger gen. These are added below
             //The "SwaggerDoc" helps with generating the documentation
             services.AddSwaggerGen(setupAction =>
             {
-                ////The SwaggerDoc needs a name and a model for the api documentation passed in as a parameter
-                //setupAction.SwaggerDoc("LibraryOpenAPISpecification", new Microsoft.OpenApi.Models.OpenApiInfo()
+                //The SwaggerDoc needs a name and a model for the api documentation passed in as a parameter
+                setupAction.SwaggerDoc("LibraryOpenAPISpecification", new Microsoft.OpenApi.Models.OpenApiInfo()
+                {
+                    //The model needs specifications that can help identify the documentation
+                    Title = "Library API",
+                    Version = "1",
+                    //It helps to attach descriptions to API especially when you're exposing them to the public.
+                    Description = "Through this API you can access authors and their books.",
+                    //It is also important to add contact information to your API in order to help users of the API send feedback.
+                    Contact = new Microsoft.OpenApi.Models.OpenApiContact()
+                    {
+                        Email = "olabayobalogun@gmail.com",
+                        Name = " Olabayo Balogun",
+                        Url = new Uri("https://www.linkedin.com/in/olabayobalogun/")
+                        //The extensions property can be used to hint at features that aren't covered by Open API documentation, eg, address, logo, etc.
+                        //Extensions = 
+                    },
+                    //The License feature can be used to show things like licenses
+                    License = new Microsoft.OpenApi.Models.OpenApiLicense()
+                    {
+                        Name = "MIT License",
+                        Url = new Uri("https://opensources.org/licenses/MIT")
+                    }
+                    //Terms of service can also be added if needed.
+                    //TermsOfService =
+                });
+
+                //This swagger document and the one after it are used to show how to work with multiple OpenAPI specifications.
+                //setupAction.SwaggerDoc("LibraryOpenAPISpecificationAuthors", new Microsoft.OpenApi.Models.OpenApiInfo()
                 //{
                 //    //The model needs specifications that can help identify the documentation
-                //    Title = "Library API",
+                //    Title = "Library API (Authors)",
                 //    Version = "1",
                 //    //It helps to attach descriptions to API especially when you're exposing them to the public.
-                //    Description = "Through this API you can access authors and their books.",
+                //    Description = "Through this API you can access authors.",
                 //    //It is also important to add contact information to your API in order to help users of the API send feedback.
                 //    Contact = new Microsoft.OpenApi.Models.OpenApiContact()
                 //    {
@@ -124,59 +168,32 @@ namespace Library.API
                 //    //TermsOfService =
                 //});
 
-                //The SwaggerDoc needs a name and a model for the api documentation passed in as a parameter
-                setupAction.SwaggerDoc("LibraryOpenAPISpecificationAuthors", new Microsoft.OpenApi.Models.OpenApiInfo()
-                {
-                    //The model needs specifications that can help identify the documentation
-                    Title = "Library API (Authors)",
-                    Version = "1",
-                    //It helps to attach descriptions to API especially when you're exposing them to the public.
-                    Description = "Through this API you can access authors.",
-                    //It is also important to add contact information to your API in order to help users of the API send feedback.
-                    Contact = new Microsoft.OpenApi.Models.OpenApiContact()
-                    {
-                        Email = "olabayobalogun@gmail.com",
-                        Name = " Olabayo Balogun",
-                        Url = new Uri("https://www.linkedin.com/in/olabayobalogun/")
-                        //The extensions property can be used to hint at features that aren't covered by Open API documentation, eg, address, logo, etc.
-                        //Extensions = 
-                    },
-                    //The License feature can be used to show things like licenses
-                    License = new Microsoft.OpenApi.Models.OpenApiLicense()
-                    {
-                        Name = "MIT License",
-                        Url = new Uri("https://opensources.org/licenses/MIT")
-                    }
-                    //Terms of service can also be added if needed.
-                    //TermsOfService =
-                });
-
-                //The SwaggerDoc needs a name and a model for the api documentation passed in as a parameter
-                setupAction.SwaggerDoc("LibraryOpenAPISpecificationBooks", new Microsoft.OpenApi.Models.OpenApiInfo()
-                {
-                    //The model needs specifications that can help identify the documentation
-                    Title = "Library API (Books)",
-                    Version = "1",
-                    //It helps to attach descriptions to API especially when you're exposing them to the public.
-                    Description = "Through this API you can access books.",
-                    //It is also important to add contact information to your API in order to help users of the API send feedback.
-                    Contact = new Microsoft.OpenApi.Models.OpenApiContact()
-                    {
-                        Email = "olabayobalogun@gmail.com",
-                        Name = " Olabayo Balogun",
-                        Url = new Uri("https://www.linkedin.com/in/olabayobalogun/")
-                        //The extensions property can be used to hint at features that aren't covered by Open API documentation, eg, address, logo, etc.
-                        //Extensions = 
-                    },
-                    //The License feature can be used to show things like licenses
-                    License = new Microsoft.OpenApi.Models.OpenApiLicense()
-                    {
-                        Name = "MIT License",
-                        Url = new Uri("https://opensources.org/licenses/MIT")
-                    }
-                    //Terms of service can also be added if needed.
-                    //TermsOfService =
-                });
+                //This second swagger document is meant to show how we can work with multiple Open API specifications
+                //setupAction.SwaggerDoc("LibraryOpenAPISpecificationBooks", new Microsoft.OpenApi.Models.OpenApiInfo()
+                //{
+                //    //The model needs specifications that can help identify the documentation
+                //    Title = "Library API (Books)",
+                //    Version = "1",
+                //    //It helps to attach descriptions to API especially when you're exposing them to the public.
+                //    Description = "Through this API you can access books.",
+                //    //It is also important to add contact information to your API in order to help users of the API send feedback.
+                //    Contact = new Microsoft.OpenApi.Models.OpenApiContact()
+                //    {
+                //        Email = "olabayobalogun@gmail.com",
+                //        Name = " Olabayo Balogun",
+                //        Url = new Uri("https://www.linkedin.com/in/olabayobalogun/")
+                //        //The extensions property can be used to hint at features that aren't covered by Open API documentation, eg, address, logo, etc.
+                //        //Extensions = 
+                //    },
+                //    //The License feature can be used to show things like licenses
+                //    License = new Microsoft.OpenApi.Models.OpenApiLicense()
+                //    {
+                //        Name = "MIT License",
+                //        Url = new Uri("https://opensources.org/licenses/MIT")
+                //    }
+                //    //Terms of service can also be added if needed.
+                //    //TermsOfService =
+                //});
 
                 //The service below is called in the situation where you need to differentiate between two APIs that have very similar names and attributes
                 /*setupAction.ResolveConflictingActions(apiDescriptions =>
@@ -233,10 +250,13 @@ namespace Library.API
             app.UseSwaggerUI(setupAction =>
             {
                 //we do this to show the swagger UI where to find the OpenAPI documentation and assign a name to the endpoint
-                setupAction.SwaggerEndpoint("/swagger/LibraryOpenAPISpecificationAuthors/swagger.json", "Library API (Authors)");
+                setupAction.SwaggerEndpoint("/swagger/LibraryOpenAPISpecification/swagger.json", "Library API");
+                
+                //setupAction.SwaggerEndpoint("/swagger/LibraryOpenAPISpecificationAuthors/swagger.json", "Library API (Authors)");
 
                 //When working with multiple OpenAPI specifications, you can add their locations here like this.
-                setupAction.SwaggerEndpoint("/swagger/LibraryOpenAPISpecificationBooks/swagger.json", "Library API (Books)");
+                //Having multiple API specifications may clash with API versioning.
+                //setupAction.SwaggerEndpoint("/swagger/LibraryOpenAPISpecificationBooks/swagger.json", "Library API (Books)");
                 //To ensure that swagger loads in the root URL on launching the app, the code below is written
                 setupAction.RoutePrefix = "";
             });

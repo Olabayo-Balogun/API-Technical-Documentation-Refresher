@@ -13,11 +13,16 @@ namespace Library.API.Controllers
 {
         //The attribute below declares the return type of the controller
         [Produces("application/json", "application/xml")]
-        [Route("api/authors/{authorId}/books")]
+        [Route("api/v1.0/authors/{authorId}/books")]
+
+        //As of the time of the writing of this code, swashbuckle doesn't quickly recognize the versions of two APIs which makes it think that the APIs are the same. This is why magic strings are used above.
+        //[Route("api/v{version:apiversion}/authors/{authorId}/books")]
+
         //The "ApiExplorerSettings" has the "GroupName" feature which helps to specify where all the actions in a controller belong
         //The "ApiExplorerSettings" can also be declared at action/API level.
         //Note that the "GroupName" must be the same as the SwaggerDoc name in the startup class
-        [ApiExplorerSettings(GroupName = "LibraryOpenAPISpecificationBooks")]
+        //[ApiExplorerSettings(GroupName = "LibraryOpenAPISpecificationBooks")]
+        //Note that it may clash with API versioning
         [ApiController]
         //Adding general response types at the controller level saves you from having to repeat it for each API.
         //Only add API response types that apply to all APIs (within the controller) at the controller level

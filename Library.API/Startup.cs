@@ -1,13 +1,16 @@
 ﻿using AutoMapper;
+using Library.API.Authentication;
 using Library.API.Contexts;
 using Library.API.OperationsFilters;
 using Library.API.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
@@ -38,12 +41,18 @@ namespace Library.API
             {
                 //Using this "setupAction.Filter.Add" helps to globally declare response types for APIs
                 //It's important to note that the attributes declared below instantly overrides any default convention declared anywhere in the project
-               /* setupAction.Filters.Add(
+                setupAction.Filters.Add(
                     new ProducesResponseTypeAttribute(StatusCodes.Status406NotAcceptable));
                 setupAction.Filters.Add(
                     new ProducesResponseTypeAttribute(StatusCodes.Status400BadRequest));
                 setupAction.Filters.Add(
-                        new ProducesResponseTypeAttribute(StatusCodes.Status500InternalServerError));*/
+                        new ProducesResponseTypeAttribute(StatusCodes.Status500InternalServerError));
+                setupAction.Filters.Add(
+                    new ProducesDefaultResponseTypeAttribute());
+                
+                //Adding this completes the process of creating the authentication
+                setupAction.Filters.Add(
+                    new AuthorizeFilter());
 
                 setupAction.ReturnHttpNotAcceptable = true;
 
@@ -100,6 +109,9 @@ namespace Library.API
                 //Just like when we addressed multiple documentation, this works in such a way that it finds the API version and any minor version
                 setupAction.GroupNameFormat = "'v'VV";
             });
+
+            //This is where we declare the authentication and tie it to the Basic Authentication Handler class
+            services.AddAuthentication("Basic").AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("Basic", null);
 
             //The service below ensures that API can be versioned in this project.
             //Note that a default API must be specified at least for the API to be consumable.
@@ -341,6 +353,9 @@ namespace Library.API
             });
 
             app.UseStaticFiles();
+
+            //Make sure it occurs before the "UseMvc" call
+            app.UseAuthentication();
 
             app.UseMvc();
         }

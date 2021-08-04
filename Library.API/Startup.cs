@@ -370,6 +370,10 @@ namespace Library.API
                     setupAction.DefaultModelRendering(Swashbuckle.AspNetCore.SwaggerUI.ModelRendering.Model);
                     //The code below controls the expansion for operations and tags
                     setupAction.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
+                    //Deeplinking allows users of the API route to the particular action and run it if they have the URI. The code below is how we declare it.
+                    setupAction.EnableDeepLinking();
+                    //The code below displays the operation ID of the code
+                    setupAction.DisplayOperationId();
                 }
                 ////we do this to show the swagger UI where to find the OpenAPI documentation and assign a name to the endpoint
                 //setupAction.SwaggerEndpoint("/swagger/LibraryOpenAPISpecification/swagger.json", "Library API");

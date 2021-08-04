@@ -94,15 +94,15 @@ namespace Library.API.Controllers
         // The "remarks" code is used to add an example of what the code does
         // Also note that adding "\" to XML initiates a line break
         /// <remarks>
-        /// Sample request (this request updates the author's first name) \
-        /// PATCH /author/id \
-        /// [ \
-        ///     { \
-        ///         "op": "replace", \
-        ///         "path": "/firstname", \
-        ///         "value": "new first name" \
-        ///     } \
-        /// ] \
+        /// Sample request (this request updates the author's **first name**)   
+        ///     PATCH /author/id 
+        ///     [ 
+        ///         { 
+        ///             "op": "replace", 
+        ///             "path": "/firstname", 
+        ///             "value": "new first name" 
+        ///         } 
+        ///     ] 
         /// </remarks>
 
         [HttpPatch("{authorId}")]

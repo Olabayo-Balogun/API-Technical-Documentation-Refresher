@@ -11,11 +11,14 @@ namespace Library.API.Controllers
 {
     [Produces("appication/json", "application/xml")]
     //[Route("api/authors")]
-    
+
     //The code below is how we route API versions
-    [Route("api/v1.0/authors")]
     //As of the time of the writing of this code, swashbuckle doesn't quickly recognize the versions of two APIs which makes it think that the APIs are the same. This is why magic strings are used above.
-    //[Route("api/v{version:apiversion}/authors")]
+    //After adding "DocInclusionPredicate" to the startup class, the below can now run
+    [Route("api/v1.0/authors")]
+
+    //As of the time of the writing of this code, swashbuckle doesn't quickly recognize the versions of two APIs which makes it think that the APIs are the same. This is why magic strings are used above.
+    [Route("api/v{version:apiversion}/authors")]
     //The "ApiExplorerSettings" has the "GroupName" feature which helps to specify where all the actions in a controller belong
     //The "ApiExplorerSettings" can also be declared at action/API level.
     //Note that the "GroupName" must be the same as the SwaggerDoc name in the startup class

@@ -364,6 +364,12 @@ namespace Library.API
                     //setupAction.SwaggerEndpoint("/swagger/LibraryOpenAPISpecificationBooks/swagger.json", "Library API (Books)");
                     //To ensure that swagger loads in the root URL on launching the app, the code below is written
                     setupAction.RoutePrefix = "";
+
+                    //The code below helps to set the depth to which a model is expanded
+                    setupAction.DefaultModelExpandDepth(2);
+                    setupAction.DefaultModelRendering(Swashbuckle.AspNetCore.SwaggerUI.ModelRendering.Model);
+                    //The code below controls the expansion for operations and tags
+                    setupAction.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
                 }
                 ////we do this to show the swagger UI where to find the OpenAPI documentation and assign a name to the endpoint
                 //setupAction.SwaggerEndpoint("/swagger/LibraryOpenAPISpecification/swagger.json", "Library API");
